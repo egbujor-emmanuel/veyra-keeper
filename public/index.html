@@ -2,83 +2,127 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VEYRA Keeper · PancakeSwap V3 rebalancing agent</title>
-<meta name="description" content="VEYRA Keeper: a rebalancing agent for PancakeSwap V3 on BNB Chain. ERC-8004 agent #2718 on BSC testnet.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VEYRA Keeper · keeps a PancakeSwap V3 range where the price is</title>
+<meta name="description" content="VEYRA Keeper is a rebalancing agent for PancakeSwap V3 on BNB Chain. ERC-8004 agent #2718 on BSC testnet. Hire it on Marque or Pokter.">
+<meta property="og:title" content="VEYRA Keeper">
+<meta property="og:description" content="A rebalancing agent for PancakeSwap V3 on BNB Chain. ERC-8004 #2718, BSC testnet.">
 <link rel="icon" href="/logo.svg">
-<style>
-  :root { --bg:#0e1116; --panel:#151a22; --ink:#e8eaed; --muted:#9aa3ae; --gold:#f0b90b; --line:#232a35; }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
-  main { max-width:760px; margin:0 auto; padding:56px 20px 72px; }
-  header { display:flex; align-items:center; gap:14px; }
-  header img { width:44px; height:44px; }
-  h1 { font-size:30px; margin:0; letter-spacing:-.01em; }
-  .tag { color:var(--gold); font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
-  p.lead { color:var(--muted); font-size:18px; margin:22px 0 28px; }
-  section { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:16px 0; }
-  h2 { font-size:15px; margin:0 0 10px; color:var(--gold); text-transform:uppercase; letter-spacing:.06em; }
-  dl { display:grid; grid-template-columns:max-content 1fr; gap:6px 18px; margin:0; }
-  dt { color:var(--muted); }
-  dd { margin:0; overflow-wrap:anywhere; }
-  a { color:var(--ink); text-decoration-color:var(--gold); text-underline-offset:3px; }
-  code { font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; background:#0b0e13; padding:2px 6px; border-radius:6px; }
-  ul { margin:0; padding-left:20px; }
-  li { margin:4px 0; }
-  pre { background:#0b0e13; border:1px solid var(--line); border-radius:8px; padding:14px; overflow-x:auto; font-size:13px; margin:10px 0 0; }
-  footer { color:var(--muted); font-size:13px; margin-top:28px; }
-  @media (max-width:520px) { dl { grid-template-columns:1fr; } dt { margin-top:8px; } }
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<main>
-  <header>
-    <img src="/logo.svg" alt="">
-    <div><div class="tag">Rebalancing agent · BNB Chain</div><h1>VEYRA Keeper</h1></div>
-  </header>
-  <p class="lead">Hire it with a PancakeSwap V3 position and it returns a re-centred range on valid ticks, sized from real volatility, with the token amounts and a slippage bound. It also runs its own testnet position by the same rule.</p>
+<a class="skip" href="#main">Skip to content</a>
 
-  <section>
-    <h2>Identity</h2>
-    <dl>
-      <dt>ERC-8004 agent</dt><dd><strong>#2718</strong> on BSC testnet (chain 97)</dd>
-      <dt>Registry</dt><dd><a href="https://testnet.bscscan.com/address/0x8004A818BFB912233c491871b3d84c89A494BD9e">0x8004A818…94BD9e</a></dd>
-      <dt>Owner wallet</dt><dd><a href="https://testnet.bscscan.com/address/0xeDeaA0714213eCCaB5ab9CF602EafE4F7A741b3C">0xeDeaA0714213eCCaB5ab9CF602EafE4F7A741b3C</a></dd>
-      <dt>Category</dt><dd>Rebalancing</dd>
-      <dt>Price</dt><dd>0.01 U per job, via ERC-8183 escrow</dd>
-    </dl>
+<header class="bar">
+  <a class="mark" href="/" aria-label="VEYRA Keeper home">
+    <img src="/logo.svg" width="28" height="28" alt="">
+    <span>VEYRA <b>Keeper</b></span>
+  </a>
+  <nav aria-label="Main">
+    <a href="#ledger">Ledger</a>
+    <a href="#rules">Rules</a>
+    <a href="#try">Try it</a>
+    <a href="https://github.com/egbujor-emmanuel/veyra-keeper">Source</a>
+  </nav>
+  <span class="live" id="live" data-state="loading"><i aria-hidden="true"></i><span id="live-text">Checking</span></span>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero-copy">
+      <p class="eyebrow">Rebalancing agent · PancakeSwap V3 · BNB Chain</p>
+      <h1 id="hero-h">Keeps a liquidity range <em>where the price is.</em></h1>
+      <p class="lede">Send it a position. It reads the pool at one block and returns a re-centred range on valid ticks, sized from real volatility, with the amounts that keep your liquidity and a slippage bound. It never touches your wallet.</p>
+      <div class="ctas">
+        <a class="btn primary" href="https://marque.trade/agents/97/2718">Hire on Marque <span aria-hidden="true">→</span></a>
+        <a class="btn" href="https://pokter.xyz/agents/97/2718">Hire on Pokter</a>
+      </div>
+      <dl class="facts">
+        <div><dt>ERC-8004</dt><dd>#2718</dd></div>
+        <div><dt>Network</dt><dd>BSC testnet</dd></div>
+        <div><dt>Price</dt><dd>0.01 U / job</dd></div>
+        <div><dt>Marque test</dt><dd class="ok">MCS-REB-1 pass</dd></div>
+      </dl>
+    </div>
+
+    <figure class="gauge" aria-labelledby="gauge-cap">
+      <figcaption id="gauge-cap">
+        <span>Its own position, live</span>
+        <span class="mono" id="g-pool">USDT / WBNB · 0.25%</span>
+      </figcaption>
+      <div class="scale" id="scale" data-state="loading">
+        <div class="track" aria-hidden="true">
+          <div class="ticks" id="ticks"></div>
+          <div class="band" id="band"></div>
+          <div class="price" id="price"><span class="price-tag mono" id="price-tag"></span></div>
+        </div>
+        <div class="axis mono" aria-hidden="true"><span id="ax-lo"></span><span class="band-label" id="band-label"></span><span id="ax-hi"></span></div>
+        <p class="scale-msg" id="scale-msg" role="status">Reading the pool on BSC testnet…</p>
+      </div>
+      <dl class="readout">
+        <div><dt>Pool tick</dt><dd class="mono" id="r-tick">—</dd></div>
+        <div><dt>Range</dt><dd class="mono" id="r-range">—</dd></div>
+        <div><dt>Width now</dt><dd class="mono" id="r-width">—</dd></div>
+        <div><dt>Volatility target</dt><dd class="mono" id="r-target">—</dd></div>
+      </dl>
+      <p class="verdict" id="verdict"><b id="v-head">Deciding…</b> <span id="v-body"></span></p>
+    </figure>
   </section>
 
-  <section>
-    <h2>Hire it</h2>
-    <ul>
-      <li><a href="https://marque.trade/agents/97/2718">Marque</a></li>
-      <li><a href="https://pokter.xyz/agents/97/2718">Pokter</a></li>
-    </ul>
+  <section class="ledger" id="ledger" aria-labelledby="ledger-h">
+    <div class="sec-head">
+      <h2 id="ledger-h">On-chain ledger</h2>
+      <p class="sum mono" id="ledger-sum">—</p>
+    </div>
+    <ol class="actions" id="actions" aria-live="polite">
+      <li class="placeholder">Loading the action log…</li>
+    </ol>
   </section>
 
-  <section>
-    <h2>Endpoints</h2>
-    <ul>
+  <section class="rules" id="rules" aria-labelledby="rules-h">
+    <div class="sec-head">
+      <h2 id="rules-h">When it re-centres</h2>
+      <p class="sum">Checked every four hours. At most three times a UTC day.</p>
+    </div>
+    <ol class="rule-list">
+      <li><span class="n mono">01</span><div><h3>The price leaves the range</h3><p>The position has stopped earning. Close it and reopen around the current tick.</p></div></li>
+      <li><span class="n mono">02</span><div><h3>The centre drifts</h3><p>Price has moved more than a third of the half-width from the middle, so one side is running thin.</p></div></li>
+      <li><span class="n mono">03</span><div><h3>Volatility changes the right width</h3><p>Width is two daily sigmas of mainnet USDT/WBNB's 24 h realised volatility. A 20% change resizes the range.</p></div></li>
+      <li><span class="n mono">04</span><div><h3>A day passes</h3><p>A standing daily re-centre, so the range never goes stale on a quiet day.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="try" id="try" aria-labelledby="try-h">
+    <div class="sec-head">
+      <h2 id="try-h">Ask it something, free</h2>
+      <p class="sum">Read-only. The same answer a paid job delivers, without the on-chain receipt.</p>
+    </div>
+    <div class="code">
+      <button class="copy" type="button" data-copy="curl-cmd">Copy</button>
+      <pre id="curl-cmd" tabindex="0">curl -X POST https://veyra-keeper.vercel.app/a2a \
+  -H 'content-type: application/json' \
+  --data '{"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"role":"user","messageId":"1","parts":[{"kind":"text","text":"Re-centre position 7683201 at ±6% on chain 56"}]}}}'</pre>
+    </div>
+    <ul class="links">
       <li><a href="/.well-known/agent-card.json">A2A agent card</a></li>
-      <li><a href="/.well-known/agent-registration.json">ERC-8004 registration file</a></li>
-      <li><a href="/api/status">Live status and on-chain action log</a></li>
-      <li><a href="/api/keeper">Keeper decision (dry run)</a></li>
-    </ul>
-    <pre>curl -X POST https://veyra-keeper.vercel.app/a2a -H 'content-type: application/json' --data '{"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"role":"user","messageId":"1","parts":[{"kind":"text","text":"Re-centre position 7683201 at ±6% on chain 56"}]}}}'</pre>
-  </section>
-
-  <section>
-    <h2>How it decides</h2>
-    <ul>
-      <li>Reads the position and pool at one block; reports current tick, in-range and distance to the nearer bound.</li>
-      <li>Proposes ticks on the pool's spacing, at your width or two daily sigmas of 24 h realised volatility.</li>
-      <li>Amounts keep the same liquidity (V3 formula); passes Marque's MCS-REB-1 test.</li>
-      <li>Its own position re-centres when price leaves the range, drifts, the width changes, or a UTC day passes.</li>
+      <li><a href="/.well-known/agent-registration.json">ERC-8004 registration</a></li>
+      <li><a href="/api/status">Status JSON</a></li>
+      <li><a href="https://testnet.bscscan.com/address/0xeDeaA0714213eCCaB5ab9CF602EafE4F7A741b3C">Agent wallet</a></li>
     </ul>
   </section>
-
-  <footer>Built on VEYRA. BSC testnet, test tokens only. <a href="https://github.com/egbujor-emmanuel/veyra-keeper">Source</a></footer>
 </main>
+
+<footer class="foot">
+  <p>Built on VEYRA's range engine for BNB Chain's Set and Earn. BSC testnet, test tokens only; nothing here is investment advice.</p>
+  <p class="mono">registry 0x8004A818…94BD9e · owner 0xeDea…1b3C</p>
+</footer>
+
+<script src="/vendor/gsap.min.js" defer></script>
+<script src="/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/vendor/lenis.min.js" defer></script>
+<script src="/app.js" defer></script>
 </body>
 </html>
