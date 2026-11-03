@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/.well-known/agent-card.json", "destination": "/api/card" },
+    { "source": "/.well-known/agent.json", "destination": "/api/card" },
+    { "source": "/.well-known/agent-registration.json", "destination": "/api/registration" },
+    { "source": "/a2a", "destination": "/api/a2a" }
+  ],
+  "functions": { "api/**/*.ts": { "maxDuration": 120 } },
+  "crons": [
+    { "path": "/api/keeper", "schedule": "10 0 * * *" },
+    { "path": "/api/sweep", "schedule": "20 0 * * *" }
+  ]
+}
