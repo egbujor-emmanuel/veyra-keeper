@@ -85,7 +85,9 @@ export async function handleRpc(body: unknown, background: Background): Promise<
     if (req.method === 'message/send') {
       const message = (req.params?.['message'] ?? {}) as { parts?: Part[]; contextId?: string; taskId?: string }
       const data = await dispatch(message.parts ?? [], background)
-      return { jsonrpc: '2.0', id, result: { kind: 'message', role: 'agent', messageId: randomUUID(), parts: [{ kind: 'data', data }], ...(message.contextId ? { contextId: message.contextId } : {}) } }
+      // Prompt-style callers (Marque's Standard) read strict JSON from a text part; skill callers read the data part.
+      const parts = [{ kind: 'text', text: JSON.stringify(data) }, { kind: 'data', data }]
+      return { jsonrpc: '2.0', id, result: { kind: 'message', role: 'agent', messageId: randomUUID(), parts, ...(message.contextId ? { contextId: message.contextId } : {}) } }
     }
     if (req.method === 'agent/getAuthenticatedExtendedCard' || req.method === 'agent/getCard') return { jsonrpc: '2.0', id, result: agentCard() }
     return { jsonrpc: '2.0', id, error: { code: -32601, message: `method not supported: ${String(req.method)}` } }
