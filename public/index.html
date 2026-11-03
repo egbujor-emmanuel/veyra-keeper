@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEYRA Keeper · PancakeSwap V3 rebalancing agent</title>
+<meta name="description" content="VEYRA Keeper: a rebalancing agent for PancakeSwap V3 on BNB Chain. ERC-8004 agent #2718 on BSC testnet.">
+<link rel="icon" href="/logo.svg">
+<style>
+  :root { --bg:#0e1116; --panel:#151a22; --ink:#e8eaed; --muted:#9aa3ae; --gold:#f0b90b; --line:#232a35; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:56px 20px 72px; }
+  header { display:flex; align-items:center; gap:14px; }
+  header img { width:44px; height:44px; }
+  h1 { font-size:30px; margin:0; letter-spacing:-.01em; }
+  .tag { color:var(--gold); font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
+  p.lead { color:var(--muted); font-size:18px; margin:22px 0 28px; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:16px 0; }
+  h2 { font-size:15px; margin:0 0 10px; color:var(--gold); text-transform:uppercase; letter-spacing:.06em; }
+  dl { display:grid; grid-template-columns:max-content 1fr; gap:6px 18px; margin:0; }
+  dt { color:var(--muted); }
+  dd { margin:0; overflow-wrap:anywhere; }
+  a { color:var(--ink); text-decoration-color:var(--gold); text-underline-offset:3px; }
+  code { font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; background:#0b0e13; padding:2px 6px; border-radius:6px; }
+  ul { margin:0; padding-left:20px; }
+  li { margin:4px 0; }
+  pre { background:#0b0e13; border:1px solid var(--line); border-radius:8px; padding:14px; overflow-x:auto; font-size:13px; margin:10px 0 0; }
+  footer { color:var(--muted); font-size:13px; margin-top:28px; }
+  @media (max-width:520px) { dl { grid-template-columns:1fr; } dt { margin-top:8px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="/logo.svg" alt="">
+    <div><div class="tag">Rebalancing agent · BNB Chain</div><h1>VEYRA Keeper</h1></div>
+  </header>
+  <p class="lead">Hire it with a PancakeSwap V3 position and it returns a re-centred range on valid ticks, sized from real volatility, with the token amounts and a slippage bound. It also runs its own testnet position by the same rule.</p>
+
+  <section>
+    <h2>Identity</h2>
+    <dl>
+      <dt>ERC-8004 agent</dt><dd><strong>#2718</strong> on BSC testnet (chain 97)</dd>
+      <dt>Registry</dt><dd><a href="https://testnet.bscscan.com/address/0x8004A818BFB912233c491871b3d84c89A494BD9e">0x8004A818…94BD9e</a></dd>
+      <dt>Owner wallet</dt><dd><a href="https://testnet.bscscan.com/address/0xeDeaA0714213eCCaB5ab9CF602EafE4F7A741b3C">0xeDeaA0714213eCCaB5ab9CF602EafE4F7A741b3C</a></dd>
+      <dt>Category</dt><dd>Rebalancing</dd>
+      <dt>Price</dt><dd>0.01 U per job, via ERC-8183 escrow</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Hire it</h2>
+    <ul>
+      <li><a href="https://marque.trade/agents/97/2718">Marque</a></li>
+      <li><a href="https://pokter.xyz/agents/97/2718">Pokter</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Endpoints</h2>
+    <ul>
+      <li><a href="/.well-known/agent-card.json">A2A agent card</a></li>
+      <li><a href="/.well-known/agent-registration.json">ERC-8004 registration file</a></li>
+      <li><a href="/api/status">Live status and on-chain action log</a></li>
+      <li><a href="/api/keeper">Keeper decision (dry run)</a></li>
+    </ul>
+    <pre>curl -X POST https://veyra-keeper.vercel.app/a2a -H 'content-type: application/json' --data '{"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"role":"user","messageId":"1","parts":[{"kind":"text","text":"Re-centre position 7683201 at ±6% on chain 56"}]}}}'</pre>
+  </section>
+
+  <section>
+    <h2>How it decides</h2>
+    <ul>
+      <li>Reads the position and pool at one block; reports current tick, in-range and distance to the nearer bound.</li>
+      <li>Proposes ticks on the pool's spacing, at your width or two daily sigmas of 24 h realised volatility.</li>
+      <li>Amounts keep the same liquidity (V3 formula); passes Marque's MCS-REB-1 test.</li>
+      <li>Its own position re-centres when price leaves the range, drifts, the width changes, or a UTC day passes.</li>
+    </ul>
+  </section>
+
+  <footer>Built on VEYRA. BSC testnet, test tokens only. <a href="https://github.com/egbujor-emmanuel/veyra-keeper">Source</a></footer>
+</main>
+</body>
+</html>
