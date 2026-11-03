@@ -1,4 +1,4 @@
-import { ERC8183Config, ERC8183JobOps, JobDescription, NegotiationHandler } from '@bnbagent/sdk/erc8183'
+import { ERC8183Config, ERC8183JobOps, JobDescription, NegotiationHandler, RouterClient } from '@bnbagent/sdk/erc8183'
 import { AGENT, publicUrl } from './config.js'
 import { reader } from './chain.js'
 import { parseRequest, resolveRequest } from './request.js'
@@ -12,6 +12,9 @@ const DEFAULT_TERMS = {
   deliverables: 'JSON rebalancing report: currentTick, inRange, pctToNearestBound, proposedTickLower, proposedTickUpper, amount0, amount1, maxSlippageBps, blockNumber, assumptions.',
   quality_standards: 'Read from chain at one stated block. Ticks are multiples of the pool tickSpacing; amounts satisfy the V3 liquidity formula for the same liquidity (Marque MCS-REB-1).',
 }
+
+// The SDK's built-in bsc-testnet RPC no longer resolves; it reads this override lazily on first use.
+process.env['RPC_URL_BSC_TESTNET'] ??= 'https://bsc-testnet-rpc.publicnode.com'
 
 let opsPromise: Promise<ERC8183JobOps> | null = null
 
@@ -105,6 +108,32 @@ export async function sweep(): Promise<Array<Record<string, unknown>>> {
       results.push(await deliver(id))
     } catch (e: unknown) {
       results.push({ ok: false, job_id: id, error: e instanceof Error ? e.message : String(e) })
+    }
+  }
+  return results
+}
+
+/**
+ * Settle every delivered job whose review window has closed. Until someone calls settle, a delivered
+ * job stays SUBMITTED and never completes; the router refuses (reverts) while the window is open,
+ * so a refusal here just means "not yet".
+ */
+export async function settleDue(): Promise<Array<Record<string, unknown>>> {
+  const ops = await jobOps()
+  const submitted = await ops.getSubmittedJobs()
+  const jobs = Array.isArray(submitted['jobs']) ? (submitted['jobs'] as Array<Record<string, unknown>>) : []
+  if (jobs.length === 0) return []
+  const network = new ERC8183Config({ network: AGENT.network })
+  const router = new RouterClient(reader(undefined, AGENT.chainId).client, network.effectiveRouterAddress, sdkWallet())
+  const results: Array<Record<string, unknown>> = []
+  for (const j of jobs) {
+    const id = Number(j['jobId'])
+    if (!Number.isInteger(id)) continue
+    try {
+      const tx = await router.settle(BigInt(id))
+      results.push({ ok: true, job_id: id, settle_tx: tx.transactionHash })
+    } catch (e: unknown) {
+      results.push({ ok: false, job_id: id, reason: (e instanceof Error ? e.message : String(e)).split('\n')[0] })
     }
   }
   return results

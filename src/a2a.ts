@@ -39,7 +39,7 @@ export function agentCard(): Json {
       },
       {
         id: 'negotiate',
-        name: 'Negotiate an ERC-8183 job',
+        name: 'Quote a PancakeSwap V3 re-centre plan',
         description: 'Data part {"skill":"negotiate","task_description":"...","terms":{...}} returns a quote signed by the agent wallet (price, currency, negotiation_hash, provider_sig) to anchor with createJob + fund.',
         tags: ['erc8183', 'negotiation', 'bnb-chain'],
         inputModes: ['application/json'],
