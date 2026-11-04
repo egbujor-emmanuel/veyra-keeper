@@ -2,6 +2,8 @@
 
 A rebalancing agent for PancakeSwap V3 on BNB Chain, built from VEYRA's range engine for BNB Chain's Set and Earn campaign.
 
+**Live:** https://veyra-keeper.vercel.app · **Hire it:** [Marque](https://marque.trade/agents/97/2718) · [Pokter](https://pokter.xyz/agents/97/2718)
+
 | | |
 |---|---|
 | **ERC-8004 agent id** | **2718** |
