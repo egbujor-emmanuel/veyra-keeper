@@ -1,6 +1,7 @@
 # Drives VEYRA Keeper's schedule: the keeper cycle every 4 hours (it acts only when its rule says so,
-# and at least once per UTC day), and a delivery sweep every 15 minutes for buyers who fund a job
-# but never send notify_funded. Both call the live agent; the agent wallet's key never leaves Vercel.
+# and at least once per UTC day), and a delivery-and-settlement sweep every 15 minutes for buyers who
+# fund a job but never send notify_funded. Both call the live agent; the agent wallet's key never
+# leaves Vercel.
 name: keeper
 on:
   schedule:
@@ -12,9 +13,17 @@ jobs:
     if: github.event.schedule != '*/15 * * * *'
     runs-on: ubuntu-latest
     steps:
-      - run: curl -fsS -m 110 -X POST -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" https://veyra-keeper.vercel.app/api/keeper
+      - name: Run one keeper cycle
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fsS -m 110 -X POST -H "Authorization: Bearer $CRON_SECRET" https://veyra-keeper.vercel.app/api/keeper
   sweep:
     if: github.event.schedule == '*/15 * * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - run: curl -fsS -m 110 -X POST -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" https://veyra-keeper.vercel.app/api/sweep
+      - name: Deliver and settle funded jobs
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fsS -m 110 -X POST -H "Authorization: Bearer $CRON_SECRET" https://veyra-keeper.vercel.app/api/sweep
